@@ -1,0 +1,72 @@
+.board{
+    margin: 0 auto;
+    width: 35%;
+    padding-top: 10rem;
+}
+
+th{
+    font-size: x-large;
+    padding-right: 1rem;
+}
+
+td{
+    background-color: red;
+    padding: 3rem;
+}
+
+._8 td:nth-child(2n){
+    background-color: black;
+}
+._8 td:nth-child(2n-1){
+    background-color: gray;
+}
+
+._7 td:nth-child(2n-1){
+    background-color: black;
+}
+._7 td:nth-child(2n){
+    background-color: gray;
+}
+
+._6 td:nth-child(2n){
+    background-color: black;
+}
+._6 td:nth-child(2n-1){
+    background-color: gray;
+}
+
+._5 td:nth-child(2n-1){
+    background-color: black;
+}
+._5 td:nth-child(2n){
+    background-color: gray;
+}
+
+._4 td:nth-child(2n){
+    background-color: black;
+}
+._4 td:nth-child(2n-1){
+    background-color: gray;
+}
+
+._3 td:nth-child(2n-1){
+    background-color: black;
+}
+._3 td:nth-child(2n){
+    background-color: gray;
+}
+
+._2 td:nth-child(2n){
+    background-color: black;
+}
+._2 td:nth-child(2n-1){
+    background-color: gray;
+}
+
+._1 td:nth-child(2n-1){
+    background-color: black;
+}
+._1 td:nth-child(2n){
+    background-color: gray;
+}
+
