@@ -1,7 +1,7 @@
 .board{
-    margin: 0 auto;
-    padding-left: 20rem;
-    padding-top: 5rem;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
 th{
