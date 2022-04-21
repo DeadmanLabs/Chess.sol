@@ -12,8 +12,8 @@ th{
 
 td{
     background-color: red;
-    width: 100px;
-    height: 100px;
+    width: 5rem;
+    height: 5rem;
 }
 
 ._8 td:nth-child(2n){
