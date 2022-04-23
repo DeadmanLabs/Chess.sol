@@ -34,9 +34,8 @@ function App() {
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <div className="Window" backgroundcolor="#262626">
-              <Nav />
-            </div>
+            <Nav />
+            <Selector />
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>

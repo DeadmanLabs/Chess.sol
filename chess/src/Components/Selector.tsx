@@ -25,12 +25,12 @@ const GameTable = (props) => {
         <div>
             <h1>{props.games} map here</h1>
         </div>
-    )
+    );
 }
 
 const Selector = (props) =>
 {
-    const [games, setGames] = useState([]);
+    const [games, setGames] = useState({games: {}});
     const [loading, setLoading] = useState(false);
     const fetchData = () => {
         setLoading(true);
@@ -47,7 +47,7 @@ const Selector = (props) =>
         <div>
             {loading ? 
                 <Loading /> : 
-                games.length > 0 ?
+                Object.entries(games.games).length > 0 ?
                     <GameTable games={games} /> :
                     <Empty />
             }
