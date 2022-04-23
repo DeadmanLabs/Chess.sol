@@ -7,7 +7,6 @@ import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wal
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import './Nav.css';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { loadavg } from 'os';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 

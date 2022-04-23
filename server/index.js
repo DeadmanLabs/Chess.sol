@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 http = require('http'); //Update to https later
 const solana = require('@solana/web3.js');
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 const server = http.createServer(app);
 const wss = require('socket.io')(server, {
     cors: {
@@ -33,13 +36,7 @@ class Game {
     payWinner() {
         if (this.checkWin() != undefined)
         {
-            if (this.checkWin() == 1) {
-
-            }
-            else if (this.checkWin() == 2) {
-
-            }
-            else { return; } //Dont pay anyone if there is a stalemate
+            //pay this.checkWin()
         }
     }
 
@@ -63,11 +60,24 @@ class Game {
         }
     }
 
+    toJSON() {
+        
+    }
 }
 
-app.get('/', function (req, res) {
-    res.send("");
+app.get('/games', function (req, res) {
+    let response = {games: []};
+    games.forEach(element => {
+        response.games.push(element.response)
+    });
+    res.send(JSON.stringify(response));
     res.end();
+});
+
+app.post('/new', function (req, res) {
+    let params = JSON.parse(req.body.params);
+    games.push(new Game(params.wager, params.password, params.parent, params.parent_raw));
+    res.send(JSON.stringify({ status: "success" }))
 });
 
 server.listen(80); //change to 443 for HTTPS
@@ -80,6 +90,7 @@ async function sleep(ms) {
 
 wss.on('connection', async (ws) => {
     ws.on('join', (data) => {
+        let params = JSON.parse(data);
 
     });
 });
