@@ -61,7 +61,12 @@ class Game {
     }
 
     toJSON() {
-        
+        return {
+            "wager":this.wager,
+            "parent":this.parent,
+            "password": this.password!='',
+            "challenger":(this.challenger!=undefined)
+        };
     }
 }
 
