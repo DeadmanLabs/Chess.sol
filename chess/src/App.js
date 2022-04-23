@@ -30,11 +30,13 @@ function App() {
   ], [network]);
 
   return (
-    <div className="App">
+    <div className="App" backgroundcolor="#262626">
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <Nav />
+            <div className="Window" backgroundcolor="#262626">
+              <Nav />
+            </div>
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
