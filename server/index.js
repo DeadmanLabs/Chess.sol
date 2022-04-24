@@ -45,7 +45,7 @@ class Game {
                 web3.SystemProgram.transfer({
                     fromPubkey: escrow.publicKey,
                     toPubkey: this.checkWin(),
-                    lamports: (wager * 2) - 0.0001
+                    lamports: ((wager * 2) - 0.0001) * LAMPORTS_PER_SOL
                 }),
             );
             const signature = await web3.sendAndConfirmTransaction(
@@ -95,15 +95,29 @@ class Game {
     {
         if (isCreator)
         {
-            this.parent = address;
-            this.parent_raw = socket;
-            this.parent_raw.emit('payment', JSON.stringify({ status: "buyin", amount: this.wager, address: escrow.publicKey.toString() }));
+            if (this.parent_buyin == undefined)
+            {
+                this.parent = address;
+                this.parent_raw = socket;
+                this.parent_raw.emit('payment', JSON.stringify({ status: "buyin", amount: this.wager, address: escrow.publicKey.toString() }));
+                return JSON.stringify({ status: "success", reason: "", code: 200, id: params.id });
+            }
+            else {
+                return JSON.stringify({ status: "failed", reason: "The creator of this game has already paid", code: 402});
+            }
         }
         else
         {
-            this.challenger = address;
-            this.challenger_raw = socket;
-            this.challenger_raw.emit('payment', JSON.stringify({ status: "buyin", amount: this.wager, address: escrow.publicKey.toString() }));
+            if (this.challenger_buyin == undefined)
+            {
+                this.challenger = address;
+                this.challenger_raw = socket;
+                this.challenger_raw.emit('payment', JSON.stringify({ status: "buyin", amount: this.wager, address: escrow.publicKey.toString() }));
+                return JSON.stringify({ status: "success", reason: "", code: 200, id: params.id });
+            }
+            else {
+                return JSON.stringify({ status: "failed", reason: "The challenger of this game has already paid", code: 402});
+            }
         }
     }
 
@@ -111,8 +125,8 @@ class Game {
         return {
             "wager":this.wager,
             "parent":this.parent,
-            "password": this.password!='',
-            "challenger":(this.challenger!=undefined)
+            "password": this.password != '',
+            "challenger":(this.challenger != undefined)
         };
     }
 }
@@ -143,31 +157,53 @@ async function sleep(ms) {
 }
 
 wss.on('connection', async (ws) => {
+    let game = undefined;
     ws.on('join', (data) => {
         let params = JSON.parse(data);
         if (games[params.id] != undefined)
         {
             if (games[params.id].password == params.password) 
             {
-                //check params.transaction
                 games[params.id].challenger = params.address;
                 games[params.id].challenger_raw = ws;
-                ws.on('', (data) => {
-
+                ws.on('payment', (data) => {
+                    let details = JSON.parse(data);
+                    if (details.amount >= games[game].wager)
+                    {
+                        //Confirm tx
+                        if (details.address == games[game].parent)
+                        {
+                            games[game].parent_buyin = details.tx;
+                        }
+                        else if (details.address == games[game].challenger)
+                        {
+                            games[game].challenger_buyin = details.tx;
+                        }
+                    }
                 });
                 ws.on('', (data) => {
 
                 });
-                ws.emit('entry', JSON.stringify({ status: "success", reason: "", code: 200, id: params.id }));
+                let response = games[params.id].join(params.address, ws, (games[params.id].parent == params.address));
+                ws.emit('entry', response);
+                if (response.status == "failed") {
+                    game = undefined;
+                    ws.disconnect();
+                }
+                game = params.id;
             }
             else 
             {
+                game = undefined;
                 ws.emit('entry', JSON.stringify({ status: "failed", reason: "Password is invalid!", code: 403 }));
+                ws.disconnect();
             }
         }
         else 
         {
+            game = undefined;
             ws.emit('entry', JSON.stringify({ status: "failed", reason: "Requested game does not exist!", code: 404 }));
+            ws.disconnect();
         }
     });
 });
