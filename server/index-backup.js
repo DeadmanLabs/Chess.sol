@@ -12,9 +12,6 @@ const wss = require('socket.io')(server, {
         origin: '*',
     }
 });
-
-const { Chess } = require('chess.js');
-const { throws } = require('assert');
 const games = {}
 const escrow = solana.Keypair.fromSecretKey(new Uint8Array([83,61,11,202,233,91,145,84,114,246,170,148,104,93,70,122,219,29,
                                                             237,128,185,176,237,178,33,164,177,85,83,48,23,17,187,58,155,176,
@@ -22,22 +19,22 @@ const escrow = solana.Keypair.fromSecretKey(new Uint8Array([83,61,11,202,233,91,
                                                             198,92,189,212,78,7,148,39,179,41])); //This is a DEVNET ONLY PRIVATE KEY
                                                             //DO NOT UNDER ANY CIRCUMSTANCES PUT A MAINNET KEY HERE AND PUSH
 const network = new solana.Connection(solana.clusterApiUrl('devnet'), 'confirmed');
-///const chess=new Chess();
+
 class Game {
     constructor(wager, password, parent) {
-        this.instance = new Chess();
+        this.board = undefined;
         this.password = "";
         this.wager = wager;
 
-        this.parent = parent;//black
-        this.challenger = undefined; //white
-        this.parent_raw = undefined;
-        this.challenger_raw = undefined;
+        this.parent = parent;
+        this.challenger = undefined;
+        this.parent_raw = undefined; //Define parent on join with matching address
+        this.challenger_raw = challenger_raw;
         this.parent_buyin = undefined;
         this.challenger_buyin = undefined; //Holds players transaction to pay the buyin
         this.gameover = false;
     }
-    
+
     async payWinner() {
         if (this.checkWin() != undefined)
         {
@@ -71,26 +68,6 @@ class Game {
         }
     }
 
-    checkWin() {
-        //Check if the board is in a win positin. If it is, return the player else return undefined
-        if (this.instance.in_checkmate()){ //the player has lost
-            return (this.instance.turn()=='b' ? this.challenger:this.parent);
-        }
-        if (this.instance.in_draw()){
-            return undefined;
-        }
-    }
-
-    perpetrateMove(curMove){
-        //returns the state of the board and the current player's potential move set
-        if (this.instance.move(curMove)==null){
-            return JSON.stringify({moves: this.instance.moves()});
-        }
-        else{
-            return JSON.stringify({board: this.instance.fen(), moves: this.instance.moves()});
-        }
-    }
-
     join(address, socket, isCreator)
     {
         if (isCreator)
@@ -107,13 +84,12 @@ class Game {
         }
     }
 
+    checkWin() {
+        //Check if the board is in a win positin. If it is, return the player else return undefined
+    }
+
     toJSON() {
-        return {
-            "wager":this.wager,
-            "parent":this.parent,
-            "password": this.password!='',
-            "challenger":(this.challenger!=undefined)
-        };
+        
     }
 }
 
