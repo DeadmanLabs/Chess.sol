@@ -3,7 +3,6 @@ const app = express();
 http = require('http'); //Update to https later
 const solana = require('@solana/web3.js');
 const bodyParser = require('body-parser');
-const uuid = require('uuid');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const server = http.createServer(app);
@@ -12,6 +11,7 @@ const wss = require('socket.io')(server, {
         origin: '*',
     }
 });
+
 const games = {}
 const escrow = solana.Keypair.fromSecretKey(new Uint8Array([83,61,11,202,233,91,145,84,114,246,170,148,104,93,70,122,219,29,
                                                             237,128,185,176,237,178,33,164,177,85,83,48,23,17,187,58,155,176,
@@ -19,68 +19,69 @@ const escrow = solana.Keypair.fromSecretKey(new Uint8Array([83,61,11,202,233,91,
                                                             198,92,189,212,78,7,148,39,179,41])); //This is a DEVNET ONLY PRIVATE KEY
                                                             //DO NOT UNDER ANY CIRCUMSTANCES PUT A MAINNET KEY HERE AND PUSH
 const network = new solana.Connection(solana.clusterApiUrl('devnet'), 'confirmed');
-
+///const chess=new Chess();
 class Game {
     constructor(wager, password, parent, parent_raw) {
-        this.board = undefined;
+        this.instance = new Chess();
         this.password = "";
         this.wager = wager;
 
-        this.parent = parent;
-        this.challenger = undefined;
+        this.parent = parent;//black
+        this.challenger = undefined; //white
         this.parent_raw = parent_raw;
         this.challenger_raw = challenger_raw;
-        this.gameover = false;
     }
-
-    async payWinner() {
+    
+    payWinner() {
         if (this.checkWin() != undefined)
         {
-            const transaction = new web3.Transaction().add(
-                web3.SystemProgram.transfer({
-                    fromPubkey: escrow.publicKey,
-                    toPubkey: this.checkWin(),
-                    lamports: (wager * 2) - 0.00001
-                }),
-            );
-            const signature = await web3.sendAndConfirmTransaction(
-                network,
-                transaction,
-                [escrow]
-            );
-            let result = JSON.stringify({});
-            this.parent_raw.emit(result);
-            this.challenger_raw.emit(result);
-            this.gameover = true;
-            this.parent_raw.close();
-            this.challenger_raw.close();
+            //pay this.checkWin()
         }
     }
 
     checkWin() {
         //Check if the board is in a win positin. If it is, return the player else return undefined
+        if (this.instance.in_checkmate()){ //the player has lost
+            return (this.instance.turn()=='b' ? this.challenger:this.parent);
+        }
+        if (this.instance.in_draw()){
+            return undefined;
+        }
+    }
+
+    perpetrateMove(curMove){
+        //returns the state of the board and the current player's potential move set
+        if (this.instance.move(curMove)==null){
+            return JSON.stringify({moves: this.instance.moves()});
+        }
+        else{
+            return JSON.stringify({board: this.instance.fen(), moves: this.instance.moves()});
+        }
     }
 
     toJSON() {
-        
+        return {
+            "wager":this.wager,
+            "parent":this.parent,
+            "password": this.password!='',
+            "challenger":(this.challenger!=undefined)
+        };
     }
 }
 
 app.get('/games', function (req, res) {
-    let response = {games: {}};
-    for (const [key, value] of Object.entries(games)) {
-        response.games[key] = games[key].toJSON();
-    }
+    let response = {games: []};
+    games.forEach(element => {
+        response.games.push(element.response)
+    });
     res.send(JSON.stringify(response));
     res.end();
 });
 
 app.post('/new', function (req, res) {
     let params = JSON.parse(req.body.params);
-    let id = uuid.v4();
-    games[id] = new Game(params.wager, params.password, params.parent, params.parent_raw);
-    res.send(JSON.stringify({ status: "success", game: id }));
-    res.end();
+    games.push(new Game(params.wager, params.password, params.parent, params.parent_raw));
+    res.send(JSON.stringify({ status: "success" }))
 });
 
 server.listen(80); //change to 443 for HTTPS
@@ -94,29 +95,7 @@ async function sleep(ms) {
 wss.on('connection', async (ws) => {
     ws.on('join', (data) => {
         let params = JSON.parse(data);
-        if (games[params.id] != undefined)
-        {
-            if (games[params.id].password == params.password) 
-            {
-                games[params.id].challenger = params.address;
-                games[params.id].challenger_raw = ws;
-                ws.on('', (data) => {
 
-                });
-                ws.on('', (data) => {
-
-                });
-                ws.emit(JSON.stringify({ status: "success", reason: "", code: 200 }));
-            }
-            else 
-            {
-                ws.emit(JSON.stringify({ status: "failed", reason: "Password is invalid!", code: 403 }));
-            }
-        }
-        else 
-        {
-            ws.emit(JSON.stringify({ status: "failed", reason: "Requested game does not exist!", code: 404 }));
-        }
     });
 });
 
