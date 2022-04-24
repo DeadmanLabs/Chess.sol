@@ -17,9 +17,12 @@ const GameCreator = (props) =>
     const [loading, setLoading] = useState(false);
     const fetchData = (wager, password, parent) => {
         setLoading(true);
-        fetch("http://localhost:8080/new", {
+        fetch("http://localhost/new", {
             method: 'POST',
-            headers: {},
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: `
                 "params": { wager: ${wager}, password: ${password}, parent: ${parent} } 
             `,
@@ -46,9 +49,9 @@ const GameCreator = (props) =>
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <label></label>
+                <label>Bet:</label>
                 <input type="text" pattern="[0-9]+[.][0-9]{0,3}[1-9]{1}" id="wager" name="wager" /><label>SOL</label><br />
-                <label></label>
+                <label>Password:</label>
                 <input type="text" id="password" name="password" /><br />
                 <input type="submit" value="Create Game" />
             </form>
@@ -78,7 +81,7 @@ function Nav(props: any)
         async function load() {
             setBalance("")
             const res = await grabBalance();
-            if (!active) { return }
+            if (!active) { return; }
             setBalance(res)
         }
     }, [connection, publicKey]);
@@ -89,7 +92,7 @@ function Nav(props: any)
         <div className="nav">
             <li className="nav-left">
                 <Popup trigger={<button className="newGame"> + New </button>}>
-                    <h1>Popup Content here</h1>
+                    <GameCreator parent={publicKey.toString()} />
                 </Popup>
             </li>
             <li className="nav-middle"><a><div className="balance-view">{balance} SOL</div></a></li>

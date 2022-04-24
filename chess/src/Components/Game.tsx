@@ -1,9 +1,52 @@
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wallet-adapter-base';
+import { Keypair, SystemProgram, Transaction, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import ws from 'socket.io-client';
 import './Game.css';
+import { SocketAddress } from 'net';
 
 const Game = (props) => {
+
+    const [response, setResponse] = useState("");
+    const [game, setGame] = useState(undefined);
+    const [board, setBoard] = useState("");
+    const [error, setError] = useState({});
+    useEffect(() => {
+        const socket = ws("http://localhost/");
+        socket.on('connect', () => {
+            socket.on('game', (params) => {
+
+            });
+            socket.on('payment', async (params) => {
+                let details = JSON.parse(params);
+                const { connection } = useConnection();
+                const { publicKey, sendTransaction } = useWallet();
+                if (!publicKey) throw new WalletNotConnectedError();
+                const transaction = new Transaction().add(
+                    SystemProgram.transfer({
+                        fromPubkey: publicKey,
+                        toPubkey: details.address,
+                        lamports: details.amount * LAMPORTS_PER_SOL
+                    })
+                );
+                const signature = await sendTransaction(transaction, connection);
+                await connection.confirmTransaction(signature, 'confirmed');
+                socket.emit('payment', JSON.stringify({ id: game, tx: signature }))
+            });
+            socket.on('entry', (params) => {
+                let details = JSON.parse(params);
+                if (details.status == 'success') {
+                    setGame(details.id);
+                }
+                else {
+                    setError(details);
+                }
+            });
+
+            socket.emit(JSON.stringify({id: props.gameId, password: props.password, address: props.address, transaction: props.tx }));
+        });
+    }, []);
 
     return (
         <table>
