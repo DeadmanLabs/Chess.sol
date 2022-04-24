@@ -12,7 +12,9 @@ const wss = require('socket.io')(server, {
     }
 });
 
-const games = {}
+const { Chess } = require('chess.js');
+const { throws } = require('assert');
+const games = []
 const escrow = solana.Keypair.fromSecretKey(new Uint8Array([83,61,11,202,233,91,145,84,114,246,170,148,104,93,70,122,219,29,
                                                             237,128,185,176,237,178,33,164,177,85,83,48,23,17,187,58,155,176,
                                                             253,28,255,9,247,153,198,53,44,198,150,99,230,59,102,233,118,53,
