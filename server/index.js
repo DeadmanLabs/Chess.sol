@@ -156,9 +156,17 @@ async function sleep(ms) {
     });
 }
 
+async function confirmPayment(signature) {
+    let result = await network.getSignatureStatus(signature);
+    if (result.hasOwnProperty('confirmationStatus')){
+        return (result.value.confirmationStatus == 'confirmed' || result.value.confirmationStatus == 'finalized');
+    }
+    return false;
+}
+
 wss.on('connection', async (ws) => {
     let game = undefined;
-    ws.on('join', (data) => {
+    ws.on('join', async (data) => {
         let params = JSON.parse(data);
         if (games[params.id] != undefined)
         {
@@ -170,14 +178,16 @@ wss.on('connection', async (ws) => {
                     let details = JSON.parse(data);
                     if (details.amount >= games[game].wager)
                     {
-                        //Confirm tx
-                        if (details.address == games[game].parent)
+                        if (await confirmPayment(details.tx))
                         {
-                            games[game].parent_buyin = details.tx;
-                        }
-                        else if (details.address == games[game].challenger)
-                        {
-                            games[game].challenger_buyin = details.tx;
+                            if (details.address == games[game].parent)
+                            {
+                                games[game].parent_buyin = details.tx;
+                            }
+                            else if (details.address == games[game].challenger)
+                            {
+                                games[game].challenger_buyin = details.tx;
+                            }
                         }
                     }
                 });
