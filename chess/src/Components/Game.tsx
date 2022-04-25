@@ -16,7 +16,8 @@ const Game = (props) => {
         const socket = ws("http://localhost/");
         socket.on('connect', () => {
             socket.on('game', (params) => {
-
+                let details = JSON.parse(params);
+                //Handle new board, move and gameover events
             });
             socket.on('payment', async (params) => {
                 let details = JSON.parse(params);
@@ -41,10 +42,11 @@ const Game = (props) => {
                 }
                 else {
                     setError(details);
+                    //Display Error and redirect home
+                    socket.disconnect();
                 }
             });
-
-            socket.emit(JSON.stringify({id: props.gameId, password: props.password, address: props.address, transaction: props.tx }));
+            socket.emit('join', JSON.stringify({ id: props.gameId, password: props.password, address: props.address }));
         });
     }, []);
 
@@ -61,7 +63,7 @@ const Game = (props) => {
                 <th className="header">G</th>
                 <th className="header">H</th>
             </tr>
-            <tr className="_8">
+            <tr className="row _8">
                 <th className="header">8</th>
                 <td className="A"><img src="chess_pieces\Rook_White.png" className="piece" /></td>
                 <td className="B"><img src="chess_pieces\Knight_White.png" className="piece" /></td>
@@ -72,7 +74,7 @@ const Game = (props) => {
                 <td className="G"><img src="chess_pieces\Knight_White.png" className="piece" /></td>
                 <td className="H"><img src="chess_pieces\Rook_White.png" className="piece" /></td>
             </tr>
-            <tr className="_7">
+            <tr className="row _7">
                 <th className="header">7</th>
                 <td className="A"><img src="chess_pieces\Pawn_White.png" className="piece" /></td>
                 <td className="B"><img src="chess_pieces\Pawn_White.png" className="piece" /></td>
@@ -83,7 +85,7 @@ const Game = (props) => {
                 <td className="G"><img src="chess_pieces\Pawn_White.png" className="piece" /></td>
                 <td className="H"><img src="chess_pieces\Pawn_White.png" className="piece" /></td>
             </tr>
-            <tr className="_6">
+            <tr className="row _6">
                 <th className="header">6</th>
                 <td className="A"></td>
                 <td className="B"></td>
@@ -94,7 +96,7 @@ const Game = (props) => {
                 <td className="G"></td>
                 <td className="H"></td>
             </tr>
-            <tr className="_5">
+            <tr className="row _5">
                 <th className="header">5</th>
                 <td className="A"></td>
                 <td className="B"></td>
@@ -105,7 +107,7 @@ const Game = (props) => {
                 <td className="G"></td>
                 <td className="H"></td>
             </tr>
-            <tr className="_4">
+            <tr className="row _4">
                 <th className="header">4</th>
                 <td className="A"></td>
                 <td className="B"></td>
@@ -116,7 +118,7 @@ const Game = (props) => {
                 <td className="G"></td>
                 <td className="H"></td>
             </tr>
-            <tr className="_3">
+            <tr className="row _3">
                 <th className="header">3</th>
                 <td className="A"></td>
                 <td className="B"></td>
@@ -127,7 +129,7 @@ const Game = (props) => {
                 <td className="G"></td>
                 <td className="H"></td>
             </tr>
-            <tr className="_2">
+            <tr className="row _2">
                 <th className="header">2</th>
                 <td className="A"><img src="chess_pieces\Pawn_Black.png" className="piece" /></td>
                 <td className="B"><img src="chess_pieces\Pawn_Black.png" className="piece" /></td>
@@ -138,7 +140,7 @@ const Game = (props) => {
                 <td className="G"><img src="chess_pieces\Pawn_Black.png" className="piece" /></td>
                 <td className="H"><img src="chess_pieces\Pawn_Black.png" className="piece" /></td>
             </tr>
-            <tr className="_1">
+            <tr className="row _1">
                 <th className="header">1</th>
                 <td className="A"><img src="chess_pieces\Rook_Black.png" className="piece" /></td>
                 <td className="B"><img src="chess_pieces\Knight_Black.png" className="piece" /></td>
