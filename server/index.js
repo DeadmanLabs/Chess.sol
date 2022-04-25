@@ -73,20 +73,24 @@ class Game {
 
     checkWin() {
         //Check if the board is in a win positin. If it is, return the player else return undefined
-        if (this.instance.in_checkmate()){ //the player has lost
-            return (this.instance.turn()=='b' ? this.challenger:this.parent);
+        if (this.instance.in_checkmate())
+        { //the player has lost
+            return (this.instance.turn() == 'b' ? this.challenger : this.parent);
         }
-        if (this.instance.in_draw()){
+        if (this.instance.in_draw())
+        {
             return undefined;
         }
     }
 
     perpetrateMove(curMove){
         //returns the state of the board and the current player's potential move set
-        if (this.instance.move(curMove)==null){
+        if (this.instance.move(curMove) == null) 
+        {
             return JSON.stringify({moves: this.instance.moves()});
         }
-        else{
+        else
+        {
             return JSON.stringify({board: this.instance.fen(), moves: this.instance.moves()});
         }
     }
@@ -123,8 +127,8 @@ class Game {
 
     toJSON() {
         return {
-            "wager":this.wager,
-            "parent":this.parent,
+            "wager": this.wager,
+            "parent": this.parent,
             "password": this.password != '',
             "challenger":(this.challenger != undefined)
         };
@@ -191,8 +195,8 @@ wss.on('connection', async (ws) => {
                         }
                     }
                 });
-                ws.on('', (data) => {
-
+                ws.on('game', (data) => {
+                    let details = JSON.parse(data);
                 });
                 let response = games[params.id].join(params.address, ws, (games[params.id].parent == params.address));
                 ws.emit('entry', response);
@@ -201,6 +205,8 @@ wss.on('connection', async (ws) => {
                     ws.disconnect();
                 }
                 game = params.id;
+                ws.emit('payment', JSON.stringify({ address: escrow.publicKey.toString(), amount: (games[game].wager + 0.0001) }));
+
             }
             else 
             {
