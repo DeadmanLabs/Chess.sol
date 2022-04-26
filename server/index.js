@@ -182,7 +182,8 @@ wss.on('connection', async (ws) => {
                     let details = JSON.parse(data);
                     if (details.amount >= games[game].wager)
                     {
-                        if (await confirmPayment(details.tx))
+                        let confirmed = confirmPayment(details.tx);
+                        if (confirmed)
                         {
                             if (details.address == games[game].parent)
                             {
