@@ -36,22 +36,18 @@ const GameTable = (props) => {
     return (
         <table className="Games">
             <tr>
-                <th>
-                    Creator
-                </th>
-                <th>
-                    Bet
-                </th>
-                <th>
-                    Private
-                </th>
-                <th>
-                    Full
-                </th>
+                <th>ID</th>
+                <th>Creator</th>
+                <th>Bet</th>
+                <th>Private</th>
+                <th>Full</th>
             </tr>
             {props.games.map(function (item, key) {
                 return (
                     <tr>
+                        <td>
+                            {key}
+                        </td>
                         <td>
                             {item.parent}
                         </td>
