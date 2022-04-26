@@ -22,11 +22,10 @@ const escrow = solana.Keypair.fromSecretKey(new Uint8Array([83,61,11,202,233,91,
                                                             198,92,189,212,78,7,148,39,179,41])); //This is a DEVNET ONLY PRIVATE KEY
                                                             //DO NOT UNDER ANY CIRCUMSTANCES PUT A MAINNET KEY HERE AND PUSH
 const network = new solana.Connection(solana.clusterApiUrl('devnet'), 'confirmed');
-///const chess=new Chess();
 class Game {
     constructor(wager, password, parent) {
         this.instance = new Chess();
-        this.password = "";
+        this.password = password;
         this.wager = wager;
 
         this.parent = parent;//black
@@ -53,22 +52,51 @@ class Game {
                 transaction,
                 [escrow]
             );
-            let result = JSON.stringify('game', { status: "gameover", reason: this.checkWin() + " Won", payment: signature });
-            this.parent_raw.emit(result);
-            this.challenger_raw.emit(result);
+            let result = JSON.stringify({ status: "gameover", reason: this.checkWin() + " Won", payment: signature });
+            this.broadcast('game', result);
             this.gameover = true;
             this.parent_raw.disconnect();
             this.challenger_raw.disconnect();
         }
         else
         {
-            let result = JSON.stringify('game', { status: "gameover", reason: "Stalemate" });
-            this.parent_raw.emit(result);
-            this.challenger_raw.emit(result);
+            let result = JSON.stringify({ status: "gameover", reason: "Stalemate" });
+            this.broadcast('game', result);
             this.gameover = true;
             this.parent_raw.disconnect();
             this.challenger_raw.disconnect();
         }
+    }
+
+    async payWinnerForce(address) 
+    {
+        const transaction = new web3.Transaction().add(
+            web3.SystemProgram.transfer({
+                fromPubkey: escrow.publicKey,
+                toPubkey: address,
+                lamports: ((wager * 2) - 0.0001) * LAMPORTS_PER_SOL
+            })
+        );
+        const signature = await web3.sendAndConfirmTransaction(
+            network,
+            transaction,
+            [escrow]
+        );
+        let result = JSON.stringify({ status: "gameover", reason: "Opposition forfeited the game", payment: signature });
+        let loser = JSON.stringify({ status: "gameover", reason: "You forfeited the game" });
+        if (this.parent == address) 
+        {
+            this.parent_raw.emit('game', result);
+            this.challenger_raw.emit('game', loser);
+        }
+        else if (this.challenger == address) 
+        {
+            this.challenger_raw.emit('game', result);
+            this.parent_raw.emit('game', loser);
+        }
+        this.gameover = true;
+        this.parent_raw.disconnect();
+        this.challenger_raw.disconnect();
     }
 
     checkWin() {
@@ -83,10 +111,20 @@ class Game {
         }
     }
 
+    broadcast(event, content) {
+        this.parent_raw.emit(event, content);
+        this.challenger_raw.emit(event, content);
+    }
+
     perpetrateMove(curMove){
         //returns the state of the board and the current player's potential move set
         if (this.instance.move(curMove) == null) 
         {
+            if (this.instance.in_checkmate() || this.instance.in_draw()) 
+            {
+                this.payWinner();
+                return;
+            }
             return JSON.stringify({moves: this.instance.moves()});
         }
         else
@@ -140,6 +178,7 @@ app.get('/games', function (req, res) {
     for (const [key, value] of Object.entries(games)) {
         response.games[key] = games[key].toJSON();
     }
+    console.log(`[HTTP DBG] - Game List Requested (Total Games: ${Object.entries(games).length})`);
     res.send(JSON.stringify(response));
     res.end();
 });
@@ -148,6 +187,7 @@ app.post('/new', function (req, res) {
     let params = JSON.parse(req.body.params);
     let id = uuid.v4();
     games[id] = new Game(params.wager, params.password, params.parent);
+    console.log(`[HTTP DBG] - New Game Created (id: ${id} wager: ${params.wager} password: ${params.password} parent: ${params.parent})`);
     res.send(JSON.stringify({ status: "success", game: id }));
     res.end();
 });
@@ -169,15 +209,18 @@ async function confirmPayment(signature) {
 }
 
 wss.on('connection', async (ws) => {
+    console.log('[DBG] - New Connection!')
     let game = undefined;
+    let address = undefined;
     ws.on('join', async (data) => {
         let params = JSON.parse(data);
+        console.log(`[DBG] - Join requested! (${params.id})`);
         if (games[params.id] != undefined)
         {
+            console.log(`[DBG] - Game Found!`);
             if (games[params.id].password == params.password) 
             {
-                games[params.id].challenger = params.address;
-                games[params.id].challenger_raw = ws;
+                console.log(`[DBG] - Password Accepted!`);
                 ws.on('payment', (data) => {
                     let details = JSON.parse(data);
                     if (details.amount >= games[game].wager)
@@ -193,24 +236,66 @@ wss.on('connection', async (ws) => {
                             {
                                 games[game].challenger_buyin = details.tx;
                             }
+                            ws.emit('payment-completed', JSON.stringify({}));
+                            console.log(`[DBG] - Payment completed!`);
+                        }
+                        else
+                        {
+                            console.log(`[DBG] - Payment not confirmed!`);
                         }
                     }
+                    else
+                    {
+                        console.log(`[DBG] - Payment amount less then wager...Keeping`);
+                    }
                 });
+                console.log(`[VDBG] - Payment Handler Started!`);
                 ws.on('game', (data) => {
                     let details = JSON.parse(data);
+                    if (details.status == "move")
+                    {
+                        //Players Move
+                        let results = perpetrateMove();
+                        if (JSON.parse(results).hasOwnProperty('board'))
+                        {
+                            //Valid Move
+                            let a = 1;
+                        }
+                        //Invalid Move
+                    }
+                    else if (details.status == "forfeit") 
+                    {
+                        let loser = "";
+                        if (address == games[game].parent)
+                        {
+                            games[game].payWinnerForce(games[game].challenger);
+                            loser = "parent";
+                        }
+                        else if (address == games[game].challenger)
+                        {
+                            games[game].payWinnerForce(games[game].parent);
+                            loser = "challenger";
+                        }
+                        console.log(`[DBG] - ${loser} forfeited the game`);
+                    }
                 });
+                console.log(`[VDBG] - Game Handler Started!`);
                 let response = games[params.id].join(params.address, ws, (games[params.id].parent == params.address));
                 ws.emit('entry', response);
+                console.log(`[DBG] - Game Join Result sent!`);
                 if (response.status == "failed") {
+                    console.log(`[DBG] - Game failed to join!`);
                     game = undefined;
                     ws.disconnect();
                 }
+                address = params.address;
                 game = params.id;
                 ws.emit('payment', JSON.stringify({ address: escrow.publicKey.toString(), amount: (games[game].wager + 0.0001) }));
-
+                console.log(`[DBG] - Payment Request sent!`);
             }
             else 
             {
+                console.log(`[DBG] - Game Password Invalid!`);
                 game = undefined;
                 ws.emit('entry', JSON.stringify({ status: "failed", reason: "Password is invalid!", code: 403 }));
                 ws.disconnect();
@@ -218,6 +303,7 @@ wss.on('connection', async (ws) => {
         }
         else 
         {
+            console.log(`[DGB] - Requested Game does not exist!`);
             game = undefined;
             ws.emit('entry', JSON.stringify({ status: "failed", reason: "Requested game does not exist!", code: 404 }));
             ws.disconnect();
@@ -225,5 +311,5 @@ wss.on('connection', async (ws) => {
     });
 });
 
-wss.listen(server);
+wss.listen(server); //Change to express and html server start
 console.log('Running Chess.SOL @ 80...');
