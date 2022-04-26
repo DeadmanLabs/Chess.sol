@@ -3,14 +3,16 @@ import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wal
 import { Keypair, SystemProgram, Transaction, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import ws from 'socket.io-client';
+import { Chess } from 'chess.js'; 
 import './Game.css';
-import { SocketAddress } from 'net';
 
 const Game = (props) => {
 
     const [response, setResponse] = useState("");
     const [game, setGame] = useState(undefined);
+    const [state, setState] = useState("pending");
     const [board, setBoard] = useState("");
+    const [moves, setMoves] = useState({});
     const [error, setError] = useState({});
     useEffect(() => {
         const socket = ws("http://localhost/");
@@ -18,6 +20,25 @@ const Game = (props) => {
             socket.on('game', (params) => {
                 let details = JSON.parse(params);
                 //Handle new board, move and gameover events
+                if (details.status == "gameover")
+                {
+                    //Terminate Socket and display end message
+                    socket.disconnect();
+                    setGame(undefined);
+                    setBoard("");
+                    setMoves({});
+                    
+                }
+                else if (details.status == "board")
+                {
+                    //Update board event
+                    setBoard(details.board);
+                }
+                else if (details.status == "move")
+                {
+                    //new possible moveset
+                    setMoves(details.moves);
+                }
             });
             socket.on('payment', async (params) => {
                 let details = JSON.parse(params);
@@ -33,16 +54,22 @@ const Game = (props) => {
                 );
                 const signature = await sendTransaction(transaction, connection);
                 await connection.confirmTransaction(signature, 'confirmed');
-                socket.emit('payment', JSON.stringify({ id: game, tx: signature }))
+                socket.emit('payment', JSON.stringify({ id: game, tx: signature }));
+            });
+            socket.on('payment-completed', (params) => {
+                let details = JSON.parse(params);
+                setState("paid");
             });
             socket.on('entry', (params) => {
                 let details = JSON.parse(params);
                 if (details.status == 'success') {
                     setGame(details.id);
+                    setState("joined");
                 }
                 else {
                     setError(details);
                     //Display Error and redirect home
+                    alert(error);
                     socket.disconnect();
                 }
             });

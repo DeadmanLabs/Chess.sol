@@ -91,9 +91,13 @@ function Nav(props: any)
     return (
         <div className="nav">
             <li className="nav-left">
-                <Popup trigger={<button className="newGame"> + New </button>}>
-                    <GameCreator parent={publicKey.toString()} />
-                </Popup>
+                {publicKey != undefined ?
+                    <Popup trigger={<div className="newGame"> + New </div>}>
+                        <GameCreator parent={publicKey.toString()} />
+                    </Popup>
+                    :
+                    <div className="newGame">Wallet Not Connected!</div>
+                }
             </li>
             <li className="nav-middle"><a><div className="balance-view">{balance} SOL</div></a></li>
             <li className="nav-right"><a><WalletMultiButton /></a></li>

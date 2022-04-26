@@ -1,6 +1,6 @@
 .nav {
     list-style-type: none;
-    background-image: linear-gradient(140deg, rgba(0,255,153,1) 9%, rgba(187, 90, 255, 1) 90%);
+    background-image: linear-gradient(140deg, #14F195 9%, #9945FF 90%);
     overflow: hidden;
     margin: 0;
     padding: 0;
