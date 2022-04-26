@@ -7,57 +7,10 @@ import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wal
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import Popup from 'reactjs-popup';
 import './Nav.css';
+import { GameCreator} from './GameCreator.tsx';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
-
-const GameCreator = (props) => 
-{
-    const [response, setResponse] = useState({ status: "", game: "" });
-    const [loading, setLoading] = useState(false);
-    const fetchData = (wager, password, parent) => {
-        setLoading(true);
-        fetch("http://localhost/new", {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: `
-                "params": { wager: ${wager}, password: ${password}, parent: ${parent} } 
-            `,
-        })
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            setResponse(data);
-            setLoading(false);
-        });
-    }
-
-    function handleSubmit(event) {
-        event.preventDefault();
-        const form = event.currentTarget;
-        const formElements = form.elements as typeof form.elements & {
-            wager: HTMLInputElement,
-            password: HTMLInputElement,
-        }
-        fetchData(formElements.wager.value, formElements.password.value, props.parent);
-    }
-
-    return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <label>Bet:</label>
-                <input type="text" pattern="[0-9]+[.][0-9]{0,3}[1-9]{1}" id="wager" name="wager" /><label>SOL</label><br />
-                <label>Password:</label>
-                <input type="text" id="password" name="password" /><br />
-                <input type="submit" value="Create Game" />
-            </form>
-        </div>
-    );
-}
 
 function Nav(props: any)
 {
@@ -73,6 +26,7 @@ function Nav(props: any)
         return balance.toFixed(8);
     }
     const [balance, setBalance] = useState("");
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         let active = true
         load()
@@ -80,9 +34,11 @@ function Nav(props: any)
 
         async function load() {
             setBalance("")
+            setLoading(true);
             const res = await grabBalance();
             if (!active) { return; }
             setBalance(res)
+            setLoading(false);
         }
     }, [connection, publicKey]);
     
@@ -99,7 +55,7 @@ function Nav(props: any)
                     <div className="newGame">Wallet Not Connected!</div>
                 }
             </li>
-            <li className="nav-middle"><a><div className="balance-view">{balance} SOL</div></a></li>
+            <li className="nav-middle"><a><div className="balance-view">{loading ? "Loading..." : balance + "SOL"}</div></a></li>
             <li className="nav-right"><a><WalletMultiButton /></a></li>
             <li className="nav-right"><a><WalletDisconnectButton /></a></li>
         </div>

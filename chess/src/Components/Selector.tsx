@@ -1,6 +1,8 @@
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wallet-adapter-base';
+import Popup from 'reactjs-popup';
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { GameCreator } from './GameCreator.tsx';
 import './Selector.css';
 
 const Loading = () => {
@@ -13,10 +15,17 @@ const Loading = () => {
 }
 
 const Empty = () => {
+    const { publicKey, sendTransaction } = useWallet();
     return (
         <div className="Error">
             <h1>No Games Available! Please create a new game.</h1>
-            <button>+ New</button>
+            {publicKey !== null ? 
+                <Popup trigger={<div className="newGame"> + New </div>}>
+                    <GameCreator parent={publicKey.toString()} />
+                </Popup>
+                :
+                <p>Wallet Not Connected!</p>
+            }
             <button>Refresh</button>
         </div>
     );
