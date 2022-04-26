@@ -34,9 +34,40 @@ const Empty = () => {
 
 const GameTable = (props) => {
     return (
-        <div className="Games">
-            <h1>{props.games} map here</h1>
-        </div>
+        <table className="Games">
+            <tr>
+                <th>
+                    Creator
+                </th>
+                <th>
+                    Bet
+                </th>
+                <th>
+                    Private
+                </th>
+                <th>
+                    Full
+                </th>
+            </tr>
+            {props.games.map(function (item, key) {
+                return (
+                    <tr>
+                        <td>
+                            {item.parent}
+                        </td>
+                        <td>
+                            {item.wager}
+                        </td>
+                        <td>
+                            {item.password}
+                        </td>
+                        <td>
+                            {item.full}
+                        </td>
+                    </tr>
+                )
+            })}
+        </table>
     );
 }
 
