@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Chess.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script defer type = "text/javascript" src = "chess.js"></script>
     <title>Chess</title>
 </head>
 
@@ -25,91 +27,91 @@
             </tr>
             <tr class="_8">
                 <th class="header">8</th>
-                <td class="A" id="A8"><img src="chess_pieces\Rook_White.png" class="piece"></td>
-                <td class="B" id="B8"><img src="chess_pieces\Knight_White.png" class="piece"></td>
-                <td class="C" id="C8"><img src="chess_pieces\Bishop_White.png" class="piece"></td>
-                <td class="D" id="D8"><img src="chess_pieces\Queen_White.png" class="piece"></td>
-                <td class="E" id="E8"><img src="chess_pieces\King_White.png" class="piece"></td>
-                <td class="F" id="F8"><img src="chess_pieces\Bishop_White.png" class="piece"></td>
-                <td class="G" id="G8"><img src="chess_pieces\Knight_White.png" class="piece"></td>
-                <td class="H" id="H8"><img src="chess_pieces\Rook_White.png" class="piece"></td>
+                <td class="A" id="A8" name = "Rook"><img src="chess_pieces\Rook_White.png" class="piece"></td>
+                <td class="B" id="B8" name = "Knight"><img src="chess_pieces\Knight_White.png" class="piece"></td>
+                <td class="C" id="C8" name = "Bishop"><img src="chess_pieces\Bishop_White.png" class="piece"></td>
+                <td class="D" id="D8" name = "Queen"><img src="chess_pieces\Queen_White.png" class="piece"></td>
+                <td class="E" id="E8" name = "King"><img src="chess_pieces\King_White.png" class="piece"></td>
+                <td class="F" id="F8" name = "Bishop"><img src="chess_pieces\Bishop_White.png" class="piece"></td>
+                <td class="G" id="G8" name = "Knight"><img src="chess_pieces\Knight_White.png" class="piece"></td>
+                <td class="H" id="H8" name = "Rook"><img src="chess_pieces\Rook_White.png" class="piece"></td>
             </tr>
             <tr class="_7">
                 <th class="header">7</th>
-                <td class="A" id="A7"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
-                <td class="B" id="B7"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
-                <td class="C" id="C7"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
-                <td class="D" id="D7"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
-                <td class="E" id="E7"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
-                <td class="F" id="F7"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
-                <td class="G" id="G7"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
-                <td class="H" id="H7"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
+                <td class="A" id="A7" name = "Pawn"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
+                <td class="B" id="B7" name = "Pawn"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
+                <td class="C" id="C7" name = "Pawn"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
+                <td class="D" id="D7" name = "Pawn"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
+                <td class="E" id="E7" name = "Pawn"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
+                <td class="F" id="F7" name = "Pawn"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
+                <td class="G" id="G7" name = "Pawn"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
+                <td class="H" id="H7" name = "Pawn"><img src="chess_pieces\Pawn_White.png" class="piece"></td>
             </tr>
             <tr class="_6">
                 <th class="header">6</th>
-                <td class="A" id="A6"></td>
-                <td class="B" id="B6"></td>
-                <td class="C" id="C6"></td>
-                <td class="D" id="D6"></td>
-                <td class="E" id="E6"></td>
-                <td class="F" id="F6"></td>
-                <td class="G" id="G6"></td>
-                <td class="H" id="H6"></td>
+                <td class="A" id="A6" name = "Square"></td>
+                <td class="B" id="B6" name = "Square"></td>
+                <td class="C" id="C6" name = "Square"></td>
+                <td class="D" id="D6" name = "Square"></td>
+                <td class="E" id="E6" name = "Square"></td>
+                <td class="F" id="F6" name = "Square"></td>
+                <td class="G" id="G6" name = "Square"></td>
+                <td class="H" id="H6" name = "Square"></td>
             </tr>
             <tr class="_5">
                 <th class="header">5</th>
-                <td class="A" id="A5"></td>
-                <td class="B" id="B5"></td>
-                <td class="C" id="C5"></td>
-                <td class="D" id="D5"></td>
-                <td class="E" id="E5"></td>
-                <td class="F" id="F5"></td>
-                <td class="G" id="G5"></td>
-                <td class="H" id="H5"></td>
+                <td class="A" id="A5" name = "Square"></td>
+                <td class="B" id="B5" name = "Square"></td>
+                <td class="C" id="C5" name = "Square"></td>
+                <td class="D" id="D5" name = "Square"></td>
+                <td class="E" id="E5" name = "Square"></td>
+                <td class="F" id="F5" name = "Square"></td>
+                <td class="G" id="G5" name = "Square"></td>
+                <td class="H" id="H5" name = "Square"></td>
             </tr>
             <tr class="_4">
                 <th class="header">4</th>
-                <td class="A" id="A4"></td>
-                <td class="B" id="B4"></td>
-                <td class="C" id="C4"></td>
-                <td class="D" id="D4"></td>
-                <td class="E" id="E4"></td>
-                <td class="F" id="F4"></td>
-                <td class="G" id="G4"></td>
-                <td class="H" id="H4"></td>
+                <td class="A" id="A4" name = "Square"></td>
+                <td class="B" id="B4" name = "Square"></td>
+                <td class="C" id="C4" name = "Square"></td>
+                <td class="D" id="D4" name = "Square"></td>
+                <td class="E" id="E4" name = "Square"></td>
+                <td class="F" id="F4" name = "Square"></td>
+                <td class="G" id="G4" name = "Square"></td>
+                <td class="H" id="H4" name = "Square"></td>
             </tr>
             <tr class="_3">
                 <th class="header">3</th>
-                <td class="A" id="A3"></td>
-                <td class="B" id="B3"></td>
-                <td class="C" id="C3"></td>
-                <td class="D" id="D3"></td>
-                <td class="E" id="E3"></td>
-                <td class="F" id="F3"></td>
-                <td class="G" id="G3"></td>
-                <td class="H" id="H3"></td>
+                <td class="A" id="A3" name = "Square"></td>
+                <td class="B" id="B3" name = "Square"></td>
+                <td class="C" id="C3" name = "Square"></td>
+                <td class="D" id="D3" name = "Square"></td>
+                <td class="E" id="E3" name = "Square"></td>
+                <td class="F" id="F3" name = "Square"></td>
+                <td class="G" id="G3" name = "Square"></td>
+                <td class="H" id="H3" name = "Square"></td>
             </tr>
             <tr class="_2">
                 <th class="header">2</th>
-                <td class="A" id="A2"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
-                <td class="B" id="B2"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
-                <td class="C" id="C2"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
-                <td class="D" id="D2"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
-                <td class="E" id="E2"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
-                <td class="F" id="F2"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
-                <td class="G" id="G2"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
-                <td class="H" id="H2"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
+                <td class="A" id="A2" name = "Pawn"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
+                <td class="B" id="B2" name = "Pawn"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
+                <td class="C" id="C2" name = "Pawn"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
+                <td class="D" id="D2" name = "Pawn"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
+                <td class="E" id="E2" name = "Pawn"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
+                <td class="F" id="F2" name = "Pawn"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
+                <td class="G" id="G2" name = "Pawn"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
+                <td class="H" id="H2" name = "Pawn"><img src="chess_pieces\Pawn_Black.png" class="piece"></td>
             </tr>
             <tr class="_1">
                 <th class="header">1</th>
-                <td class="A" id="A1"><img src="chess_pieces\Rook_Black.png" class="piece"></td>
-                <td class="B" id="B1"><img src="chess_pieces\Knight_Black.png" class="piece"></td>
-                <td class="C" id="C1"><img src="chess_pieces\Bishop_Black.png" class="piece"></td>
-                <td class="D" id="D1"><img src="chess_pieces\Queen_Black.png" class="piece"></td>
-                <td class="E" id="E1"><img src="chess_pieces\King_Black.png" class="piece"></td>
-                <td class="F" id="F1"><img src="chess_pieces\Bishop_Black.png" class="piece"></td>
-                <td class="G" id="G1"><img src="chess_pieces\Knight_Black.png" class="piece"></td>
-                <td class="H" id="H1"><img src="chess_pieces\Rook_Black.png" class="piece"></td>
+                <td class="A" id="A1" name = "Rook"><img src="chess_pieces\Rook_Black.png" class="piece"></td>
+                <td class="B" id="B1" name = "Knight"><img src="chess_pieces\Knight_Black.png" class="piece"></td>
+                <td class="C" id="C1" name = "Bishop"><img src="chess_pieces\Bishop_Black.png" class="piece"></td>
+                <td class="D" id="D1" name = "Queen"><img src="chess_pieces\Queen_Black.png" class="piece"></td>
+                <td class="E" id="E1" name = "King"><img src="chess_pieces\King_Black.png" class="piece"></td>
+                <td class="F" id="F1" name = "Bishop"><img src="chess_pieces\Bishop_Black.png" class="piece"></td>
+                <td class="G" id="G1" name = "Knight"><img src="chess_pieces\Knight_Black.png" class="piece"></td>
+                <td class="H" id="H1" name = "Rook"><img src="chess_pieces\Rook_Black.png" class="piece"></td>
             </tr>
         </table>
     </div>
