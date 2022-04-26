@@ -7,6 +7,7 @@ import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wal
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import Popup from 'reactjs-popup';
 import './Nav.css';
+//@ts-ignore
 import { GameCreator} from './GameCreator.tsx';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
@@ -55,7 +56,7 @@ function Nav(props: any)
                     <div className="newGame">Wallet Not Connected!</div>
                 }
             </li>
-            <li className="nav-middle"><a><div className="balance-view">{loading ? "Loading..." : balance + "SOL"}</div></a></li>
+            <li className="nav-middle"><a><div className="balance-view">{loading ? "Loading..." : balance + " SOL"}</div></a></li>
             <li className="nav-right"><a><WalletMultiButton /></a></li>
             <li className="nav-right"><a><WalletDisconnectButton /></a></li>
         </div>

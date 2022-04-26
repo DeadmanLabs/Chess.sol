@@ -1,7 +1,8 @@
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wallet-adapter-base';
 import Popup from 'reactjs-popup';
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, Component } from 'react';
+//@ts-ignore
 import { GameCreator } from './GameCreator.tsx';
 import './Selector.css';
 
@@ -39,36 +40,56 @@ const GameTable = (props) => {
     );
 }
 
-const Selector = (props) =>
+class Selector extends Component
 {
-    const [games, setGames] = useState({games: {}});
-    const [loading, setLoading] = useState(false);
-    const fetchData = () => {
-        setLoading(true);
+    constructor(props) 
+    {
+        super(props);
+        this.onGameChange = this.onGameChange.bind(this);
+        this.onLoadingChange = this.onLoadingChange.bind(this);
+        this.state = {
+            games: {games: {}},
+            loading: false
+        }
+    }
+
+    onGameChange(event) {
+        this.setState({ games: event.target.value });
+    }
+
+    onLoadingChange(event) {
+        this.setState({ loading: event.target.value });
+    }
+
+    fetchData() {
+        this.setState({ loading: true });
         fetch("http://localhost/games")
             .then(response => {
                 return response.json()
             })
             .then (data => {
-                setGames(data)
-                setLoading(false);
+                this.setState({ games: data });
+                this.setState({ loading: false });
             });
     }
 
-    function componentDidMount() {
-        fetchData();
+    componentDidMount() {
+        this.fetchData();
+        alert(JSON.stringify(this.state.games));
     }
 
-    return (
-        <div className="select">
-            {loading ? 
-                <Loading /> : 
-                Object.entries(games.games).length > 0 ?
-                    <GameTable games={games} /> :
-                    <Empty />
-            }
-        </div>
-    )
+    render() {
+        return (
+            <div className="select">
+                {this.state.loading ? 
+                    <Loading /> : 
+                    Object.entries(this.state.games.games).length > 0 ?
+                        <GameTable games={this.state.games} /> :
+                        <Empty />
+                }
+            </div>
+        )
+    }
 }
 
-export { Selector };
+export default Selector;
