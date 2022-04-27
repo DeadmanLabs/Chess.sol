@@ -177,9 +177,9 @@ class Game {
 
 app.get('/games', function (req, res) {
     let response = {games: {}};
-    let entries = Object.entries(games);
-    for (const [i] of Object.entries(games)) {
-        response.games[entries[i][0]] = games[entries[i][0]].toJSON();
+    let keys = Object.keys(games);
+    for (const [i] in Object.keys(games)) {
+        response.games[keys[i]] = games[keys[i]].toJSON();
     }
     console.log(`[HTTP DBG] - Game List Requested (Total Games: ${Object.entries(games).length})`);
     res.send(JSON.stringify(response));
