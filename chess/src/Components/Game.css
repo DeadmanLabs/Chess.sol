@@ -23,6 +23,14 @@ td {
     background-color: #8d3c1e;
 }
 
+.row2:nth-child(2n) {
+    background-color: #8d3c1e;
+}
+
+.row2:nth-child(2n-1) {
+    background-color: #f1e8d8;
+}
+
 .piece{
     display: block;
     margin-left: auto;

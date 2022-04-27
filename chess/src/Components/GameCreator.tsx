@@ -43,9 +43,9 @@ const GameCreator = (props) => {
                 <div>Creating Game...</div>
                 :
                 <form onSubmit={handleSubmit}>
-                    <label>Bet:</label>
+                    <label>Bet: </label>
                     <input type="text" pattern="[0-9]+[.][0-9]{0,3}[1-9]{1}" id="wager" name="wager" /><label> SOL</label><br />
-                    <label>Password:</label>
+                    <label>Password: </label>
                     <input type="text" id="password" name="password" /><br />
                     <input type="submit" value="Create Game" />
                 </form>

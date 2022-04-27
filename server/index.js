@@ -228,7 +228,7 @@ wss.on('connection', async (ws) => {
                 console.log(`[DBG] - Password Accepted!`);
                 ws.on('payment', (data) => {
                     let details = JSON.parse(data);
-                    if (details.amount >= games[game].wager)
+                    if (details.amount + 0.00001 >= games[game].wager)
                     {
                         let confirmed = confirmPayment(details.tx);
                         if (confirmed)
@@ -251,7 +251,7 @@ wss.on('connection', async (ws) => {
                     }
                     else
                     {
-                        console.log(`[DBG] - Payment amount less then wager...Keeping`);
+                        console.log(`[DBG] - Payment amount less then wager...Keeping (${details.amount}/${games[game].wager})`);
                     }
                 });
                 console.log(`[VDBG] - Payment Handler Started!`);
