@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, Component } from 'react';
+import './GameCreator.css';
 
 const GameCreator = (props) => {
     const [response, setResponse] = useState(undefined);
