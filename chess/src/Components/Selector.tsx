@@ -21,12 +21,13 @@ const Empty = (props) => {
         <div className="Error">
             <h1>No Games Available! Please create a new game.</h1>
             {publicKey !== null ? 
-                <Popup trigger={<div className="newGame"> + New </div>}>
+                <Popup trigger={<button className="newGameB"> + New </button>}>
                     <GameCreator refresh={props.refresh} parent={publicKey.toString()} />
                 </Popup>
                 :
                 <p>Wallet Not Connected!</p>
             }
+            <br></br>
             <button onClick={props.refresh}>Refresh</button>
         </div>
     );
