@@ -124,10 +124,14 @@ const Game = (props) => {
 
     function mapPiece(pos) 
     {
-        let piece = board.get(pos.toLowerCase());
-        if (piece != null)
+        if (board != undefined)
         {
-            return pieces[piece.color][piece.type.toLowerCase()];
+            let piece = board.get(pos.toLowerCase());
+            if (piece != null)
+            {
+                return pieces[piece.color][piece.type.toLowerCase()];
+            }
+            return;
         }
         return;
     }
@@ -140,7 +144,7 @@ const Game = (props) => {
                 </div>
             :
                 <div>
-                    <table>
+                    <table className="gameBoard">
                         <tr>
                             <th className="header"></th>
                             <th className="header">A</th>
@@ -154,91 +158,91 @@ const Game = (props) => {
                         </tr>
                         <tr className="_8">
                             <th className="header">8</th>
-                            <td className="A row" id="A8" >{mapPiece("A8")}</td>
-                            <td className="B row2" id="B8" >{mapPiece("B8")}</td>
-                            <td className="C row" id="C8" >{mapPiece("C8")}</td>
-                            <td className="D row2" id="D8" >{mapPiece("D8")}</td>
-                            <td className="E row" id="E8" >{mapPiece("E8")}</td>
-                            <td className="F row2" id="F8" >{mapPiece("F8")}</td>
-                            <td className="G row" id="G8" >{mapPiece("G8")}</td>
-                            <td className="H row2" id="H8" >{mapPiece("H8")}</td>
+                            <td className="row" id="A8" >{mapPiece("A8")}</td>
+                            <td className="row2" id="B8" >{mapPiece("B8")}</td>
+                            <td className="row" id="C8" >{mapPiece("C8")}</td>
+                            <td className="row2" id="D8" >{mapPiece("D8")}</td>
+                            <td className="row" id="E8" >{mapPiece("E8")}</td>
+                            <td className="row2" id="F8" >{mapPiece("F8")}</td>
+                            <td className="row" id="G8" >{mapPiece("G8")}</td>
+                            <td className="row2" id="H8" >{mapPiece("H8")}</td>
                         </tr>
                         <tr className="_7">
                             <th className="header">7</th>
-                            <td className="A row" id="A7" >{mapPiece("A7")}</td>
-                            <td className="B row2" id="B7" >{mapPiece("B7")}</td>
-                            <td className="C row" id="C7" >{mapPiece("C7")}</td>
-                            <td className="D row2" id="D7" >{mapPiece("D7")}</td>
-                            <td className="E row" id="E7" >{mapPiece("E7")}</td>
-                            <td className="F row2" id="F7" >{mapPiece("F7")}</td>
-                            <td className="G row" id="G7" >{mapPiece("G7")}</td>
-                            <td className="H row2" id="H7" >{mapPiece("H7")}</td>
+                            <td className="row2" id="A7" >{mapPiece("A7")}</td>
+                            <td className="row" id="B7" >{mapPiece("B7")}</td>
+                            <td className="row2" id="C7" >{mapPiece("C7")}</td>
+                            <td className="row" id="D7" >{mapPiece("D7")}</td>
+                            <td className="row2" id="E7" >{mapPiece("E7")}</td>
+                            <td className="row" id="F7" >{mapPiece("F7")}</td>
+                            <td className="row2" id="G7" >{mapPiece("G7")}</td>
+                            <td className="row" id="H7" >{mapPiece("H7")}</td>
                         </tr>
                         <tr className="_6">
                             <th className="header">6</th>
-                            <td className="A row" id="A6" >{mapPiece("A6")}</td>
-                            <td className="B row2" id="B6" >{mapPiece("B6")}</td>
-                            <td className="C row" id="C6" >{mapPiece("C6")}</td>
-                            <td className="D row2" id="D6" >{mapPiece("D6")}</td>
-                            <td className="E row" id="E6" >{mapPiece("E6")}</td>
-                            <td className="F row2" id="F6" >{mapPiece("F6")}</td>
-                            <td className="G row" id="G6" >{mapPiece("G6")}</td>
-                            <td className="H row2" id="H6" >{mapPiece("H6")}</td>
+                            <td className="row" id="A6" >{mapPiece("A6")}</td>
+                            <td className="row2" id="B6" >{mapPiece("B6")}</td>
+                            <td className="row" id="C6" >{mapPiece("C6")}</td>
+                            <td className="row2" id="D6" >{mapPiece("D6")}</td>
+                            <td className="row" id="E6" >{mapPiece("E6")}</td>
+                            <td className="row2" id="F6" >{mapPiece("F6")}</td>
+                            <td className="row" id="G6" >{mapPiece("G6")}</td>
+                            <td className="row2" id="H6" >{mapPiece("H6")}</td>
                         </tr>
                         <tr className="_5">
                             <th className="header">5</th>
-                            <td className="A row" id="A5" >{mapPiece("A5")}</td>
-                            <td className="B row2" id="B5" >{mapPiece("B5")}</td>
-                            <td className="C row" id="C5" >{mapPiece("C5")}</td>
-                            <td className="D row2" id="D5" >{mapPiece("D5")}</td>
-                            <td className="E row" id="E5" >{mapPiece("E5")}</td>
-                            <td className="F row2" id="F5" >{mapPiece("F5")}</td>
-                            <td className="G row" id="G5" >{mapPiece("G5")}</td>
-                            <td className="H row2" id="H5" >{mapPiece("H5")}</td>
+                            <td className="row2" id="A5" >{mapPiece("A5")}</td>
+                            <td className="row" id="B5" >{mapPiece("B5")}</td>
+                            <td className="row2" id="C5" >{mapPiece("C5")}</td>
+                            <td className="row" id="D5" >{mapPiece("D5")}</td>
+                            <td className="row2" id="E5" >{mapPiece("E5")}</td>
+                            <td className="row" id="F5" >{mapPiece("F5")}</td>
+                            <td className="row2" id="G5" >{mapPiece("G5")}</td>
+                            <td className="row" id="H5" >{mapPiece("H5")}</td>
                         </tr>
                         <tr className="_4">
                             <th className="header">4</th>
-                            <td className="A row" id="A4" >{mapPiece("A4")}</td>
-                            <td className="B row2" id="B4" >{mapPiece("B4")}</td>
-                            <td className="C row" id="C4" >{mapPiece("C4")}</td>
-                            <td className="D row2" id="D4" >{mapPiece("D4")}</td>
-                            <td className="E row" id="E4" >{mapPiece("E4")}</td>
-                            <td className="F row2" id="F4" >{mapPiece("F4")}</td>
-                            <td className="G row" id="G4" >{mapPiece("G4")}</td>
-                            <td className="H row2" id="H4" >{mapPiece("H4")}</td>
+                            <td className="row" id="A4" >{mapPiece("A4")}</td>
+                            <td className="row2" id="B4" >{mapPiece("B4")}</td>
+                            <td className="row" id="C4" >{mapPiece("C4")}</td>
+                            <td className="row2" id="D4" >{mapPiece("D4")}</td>
+                            <td className="row" id="E4" >{mapPiece("E4")}</td>
+                            <td className="row2" id="F4" >{mapPiece("F4")}</td>
+                            <td className="row" id="G4" >{mapPiece("G4")}</td>
+                            <td className="row2" id="H4" >{mapPiece("H4")}</td>
                         </tr>
                         <tr className="_3">
                             <th className="header">3</th>
-                            <td className="A row" id="A3" >{mapPiece("A3")}</td>
-                            <td className="B row2" id="B3" >{mapPiece("B3")}</td>
-                            <td className="C row" id="C3" >{mapPiece("C3")}</td>
-                            <td className="D row2" id="D3" >{mapPiece("D3")}</td>
-                            <td className="E row" id="E3" >{mapPiece("E3")}</td>
-                            <td className="F row2" id="F3" >{mapPiece("F3")}</td>
-                            <td className="G row" id="G3" >{mapPiece("G3")}</td>
-                            <td className="H row2" id="H3" >{mapPiece("H3")}</td>
+                            <td className="row2" id="A3" >{mapPiece("A3")}</td>
+                            <td className="row" id="B3" >{mapPiece("B3")}</td>
+                            <td className="row2" id="C3" >{mapPiece("C3")}</td>
+                            <td className="row" id="D3" >{mapPiece("D3")}</td>
+                            <td className="row2" id="E3" >{mapPiece("E3")}</td>
+                            <td className="row" id="F3" >{mapPiece("F3")}</td>
+                            <td className="row2" id="G3" >{mapPiece("G3")}</td>
+                            <td className="row" id="H3" >{mapPiece("H3")}</td>
                         </tr>
                         <tr className="_2">
                             <th className="header">2</th>
-                            <td className="A row" id="A2" >{mapPiece("A2")}</td>
-                            <td className="B row2" id="B2" >{mapPiece("B2")}</td>
-                            <td className="C row" id="C2" >{mapPiece("C2")}</td>
-                            <td className="D row2" id="D2" >{mapPiece("D2")}</td>
-                            <td className="E row" id="E2" >{mapPiece("E2")}</td>
-                            <td className="F row2" id="F2" >{mapPiece("F2")}</td>
-                            <td className="G row" id="G2" >{mapPiece("G2")}</td>
-                            <td className="H row2" id="H2" >{mapPiece("H2")}</td>
+                            <td className="row" id="A2" >{mapPiece("A2")}</td>
+                            <td className="row2" id="B2" >{mapPiece("B2")}</td>
+                            <td className="row" id="C2" >{mapPiece("C2")}</td>
+                            <td className="row2" id="D2" >{mapPiece("D2")}</td>
+                            <td className="row" id="E2" >{mapPiece("E2")}</td>
+                            <td className="row2" id="F2" >{mapPiece("F2")}</td>
+                            <td className="row" id="G2" >{mapPiece("G2")}</td>
+                            <td className="row2" id="H2" >{mapPiece("H2")}</td>
                         </tr>
                         <tr className="_1">
                             <th className="header">1</th>
-                            <td className="A row" id="A1" >{mapPiece("A1")}</td>
-                            <td className="B row2" id="B1" >{mapPiece("A1")}</td>
-                            <td className="C row" id="C1" >{mapPiece("A1")}</td>
-                            <td className="D row2" id="D1" >{mapPiece("A1")}</td>
-                            <td className="E row" id="E1" >{mapPiece("A1")}</td>
-                            <td className="F row2" id="F1" >{mapPiece("A1")}</td>
-                            <td className="G row" id="G1" >{mapPiece("A1")}</td>
-                            <td className="H row2" id="H1" >{mapPiece("A1")}</td>
+                            <td className="row2" id="A1" >{mapPiece("A1")}</td>
+                            <td className="row" id="B1" >{mapPiece("B1")}</td>
+                            <td className="row2" id="C1" >{mapPiece("C1")}</td>
+                            <td className="row" id="D1" >{mapPiece("D1")}</td>
+                            <td className="row2" id="E1" >{mapPiece("E1")}</td>
+                            <td className="row" id="F1" >{mapPiece("F1")}</td>
+                            <td className="row2" id="G1" >{mapPiece("G1")}</td>
+                            <td className="row" id="H1" >{mapPiece("H1")}</td>
                         </tr>
                     </table>
                     <button onClick={forfeit}>Forfeit</button>

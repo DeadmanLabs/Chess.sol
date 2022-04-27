@@ -10,16 +10,16 @@ th {
     border-bottom: black;
 }
 
-td {
-    background-color: red;
+.gameBoard td {
     width: 5rem;
     height: 5rem;
 }
 
-td.row:nth-child(2n) td.row2:nth-child(2n-1){
+table.gameBoard .row{
     background-color: #f1e8d8;
 }
-td.row:nth-child(2n-1) td.row2:nth-child(2n){
+
+table.gameBoard .row2{
     background-color: #8d3c1e;
 }
 
