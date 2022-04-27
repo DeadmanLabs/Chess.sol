@@ -34,6 +34,7 @@ const Empty = (props) => {
 
 //Change onClick for join button to proper function later
 const GameTable = (props) => {
+    const { publicKey, sendTransaction } = useWallet();
     return (
         <div>
             <table className="Games">
@@ -56,7 +57,7 @@ const GameTable = (props) => {
                                 <td>{props.games[key].wager}</td>
                                 <td>{props.games[key].password}</td>
                                 <td>{props.games[key].full}</td>
-                                <td><button disabled={props.games[key].full} onClick={props.refresh}>Join</button></td>
+                                <td><button disabled={publicKey == null || props.games[key].full} onClick={props.refresh}>Join</button></td>
                             </tr>
                         )
                     })}
@@ -111,7 +112,7 @@ const Selector = (props) => {
         {
             return (
                 <div className="select">
-                    <GameTable resfresh={fetchData} games={games.games} />
+                    <GameTable refresh={fetchData} games={games.games} />
                 </div>
             );
         }
