@@ -8,7 +8,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import Popup from 'reactjs-popup';
 import './Nav.css';
 //@ts-ignore
-import { GameCreator} from './GameCreator.tsx';
+import { GameCreator } from './GameCreator.tsx';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 require('@solana/wallet-adapter-react-ui/styles.css');

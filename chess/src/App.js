@@ -15,7 +15,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 
 import { Nav } from './Components/Nav.tsx';
-import Selector from './Components/Selector.tsx';
+import { Selector } from './Components/Selector.tsx';
 
 function App() {
 

@@ -6,7 +6,7 @@ import React, { useState, useCallback, useEffect, useMemo, Component } from 'rea
 import { GameCreator } from './GameCreator.tsx';
 import './Selector.css';
 
-const Loading = () => {
+const Loading = (props) => {
     return (
         <div className="Loading">
             <h1>Loading games! Please wait...</h1>
@@ -15,7 +15,7 @@ const Loading = () => {
     );
 }
 
-const Empty = () => {
+const Empty = (props) => {
     const { publicKey, sendTransaction } = useWallet();
     return (
         <div className="Error">
@@ -27,96 +27,103 @@ const Empty = () => {
                 :
                 <p>Wallet Not Connected!</p>
             }
-            <button>Refresh</button>
+            <button onClick={props.refresh}>Refresh</button>
         </div>
     );
 }
 
+//Change onClick for join button to proper function later
 const GameTable = (props) => {
     return (
-        <table className="Games">
-            <tr>
-                <th>ID</th>
-                <th>Creator</th>
-                <th>Bet</th>
-                <th>Private</th>
-                <th>Full</th>
-            </tr>
-            {props.games.map(function (item, key) {
-                return (
+        <div>
+            <table className="Games">
+                <thead>
                     <tr>
-                        <td>
-                            {key}
-                        </td>
-                        <td>
-                            {item.parent}
-                        </td>
-                        <td>
-                            {item.wager}
-                        </td>
-                        <td>
-                            {item.password}
-                        </td>
-                        <td>
-                            {item.full}
-                        </td>
+                        <th>ID</th>
+                        <th>Creator</th>
+                        <th>Bet</th>
+                        <th>Private</th>
+                        <th>Full</th>
+                        <th>Join</th>
                     </tr>
-                )
-            })}
-        </table>
+                </thead>
+                <tbody>
+                    {Object.keys(props.games).map(function (key, index) {
+                        return (
+                            <tr>
+                                <td>{key}</td>
+                                <td>{props.games[key].parent}</td>
+                                <td>{props.games[key].wager}</td>
+                                <td>{props.games[key].password}</td>
+                                <td>{props.games[key].full}</td>
+                                <td><button disabled={props.games[key].full} onClick={props.refresh}>Join</button></td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+            <button onClick={props.refresh}>Refresh</button>
+        </div>
     );
 }
 
-class Selector extends Component
-{
-    constructor(props) 
-    {
-        super(props);
-        this.onGameChange = this.onGameChange.bind(this);
-        this.onLoadingChange = this.onLoadingChange.bind(this);
-        this.state = {
-            games: {games: {}},
-            loading: false
+const Selector = (props) => {
+    const [games, setGames] = useState({games: {}});
+    const [loading, setLoading] = useState(false);
+    const fetchData = async () => {
+        setLoading(true);
+        let err = true;
+        while (err)
+        {
+            try
+            {
+                await fetch("http://localhost:80/games")
+                    .then(response => {
+                        err = false;
+                        return response.json()
+                    })
+                    .then (data => {
+                        setGames(data)
+                        setLoading(false);
+                    });
+            }
+            catch { err = true; }
         }
+
     }
 
-    onGameChange(event) {
-        this.setState({ games: event.target.value });
-    }
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-    onLoadingChange(event) {
-        this.setState({ loading: event.target.value });
-    }
-
-    fetchData() {
-        this.setState({ loading: true });
-        fetch("http://localhost/games")
-            .then(response => {
-                return response.json()
-            })
-            .then (data => {
-                this.setState({ games: data });
-                this.setState({ loading: false });
-            });
-    }
-
-    componentDidMount() {
-        this.fetchData();
-        alert(JSON.stringify(this.state.games));
-    }
-
-    render() {
+    if (loading == true)
+    {
         return (
             <div className="select">
-                {this.state.loading ? 
-                    <Loading /> : 
-                    Object.entries(this.state.games.games).length > 0 ?
-                        <GameTable games={this.state.games} /> :
-                        <Empty />
-                }
+                <Loading />
             </div>
-        )
+        );
+    }
+    else
+    {
+        console.log("Games: " + Object.entries(games.games).length);
+        if (Object.entries(games.games).length > 0)
+        {
+            return (
+                <div className="select">
+                    <GameTable resfresh={fetchData} games={games.games} />
+                </div>
+            );
+        }
+        else 
+        {
+            return (
+                <div className="select">
+                    <Empty refresh={fetchData} />
+                </div>
+            );
+        }
     }
 }
 
-export default Selector;
+export { Selector };

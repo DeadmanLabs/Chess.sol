@@ -4,8 +4,10 @@ http = require('http'); //Update to https later
 const solana = require('@solana/web3.js');
 const bodyParser = require('body-parser');
 const uuid = require('uuid');
+const cors = require('cors');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({}));
 const server = http.createServer(app);
 const wss = require('socket.io')(server, {
     cors: {
@@ -165,18 +167,19 @@ class Game {
 
     toJSON() {
         return {
-            "wager": this.wager,
-            "parent": this.parent,
-            "password": this.password != '',
-            "challenger":(this.challenger != undefined)
+            wager: this.wager,
+            parent: this.parent,
+            password: this.password != '',
+            full:(this.challenger != undefined)
         };
     }
 }
 
 app.get('/games', function (req, res) {
     let response = {games: {}};
-    for (const [key, value] of Object.entries(games)) {
-        response.games[key] = games[key].toJSON();
+    let entries = Object.entries(games);
+    for (const [i] of Object.entries(games)) {
+        response.games[entries[i][0]] = games[entries[i][0]].toJSON();
     }
     console.log(`[HTTP DBG] - Game List Requested (Total Games: ${Object.entries(games).length})`);
     res.send(JSON.stringify(response));
@@ -184,7 +187,8 @@ app.get('/games', function (req, res) {
 });
 
 app.post('/new', function (req, res) {
-    let params = JSON.parse(req.body.params);
+    console.log(`New Game Request: ${JSON.stringify(req.body.params)}`);
+    let params = req.body.params;
     let id = uuid.v4();
     games[id] = new Game(params.wager, params.password, params.parent);
     console.log(`[HTTP DBG] - New Game Created (id: ${id} wager: ${params.wager} password: ${params.password} parent: ${params.parent})`);
@@ -218,7 +222,7 @@ wss.on('connection', async (ws) => {
         if (games[params.id] != undefined)
         {
             console.log(`[DBG] - Game Found!`);
-            if (games[params.id].password == params.password) 
+            if (games[params.id].password == "" || games[params.id].password == params.password) 
             {
                 console.log(`[DBG] - Password Accepted!`);
                 ws.on('payment', (data) => {
