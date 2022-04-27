@@ -16,10 +16,10 @@ td {
     height: 5rem;
 }
 
-.row td:nth-child(2n){
+.row:nth-child(2n){
     background-color: #f1e8d8;
 }
-.row td:nth-child(2n-1){
+.row:nth-child(2n-1){
     background-color: #8d3c1e;
 }
 

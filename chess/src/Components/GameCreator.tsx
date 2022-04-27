@@ -54,4 +54,26 @@ const GameCreator = (props) => {
     );
 }
 
-export { GameCreator };
+const GameJoiner = (props) => {
+    function handleSubmit(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const formElements = form.elements as typeof form.elements & {
+            password: HTMLInputElement,
+        }
+        props.setPass(formElements.password.value);
+        props.setEntered(props.gameId);
+    }
+
+    return (
+        <div className="joiner">
+            <form onSubmit={handleSubmit}>
+                <label>Password: </label>
+                <input type="password" id="password" name="password" /><br />
+                <input type="submit" value="Join" />
+            </form>
+        </div>
+    );
+}
+
+export { GameCreator, GameJoiner };

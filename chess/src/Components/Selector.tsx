@@ -3,7 +3,9 @@ import { WalletNotConnectedError, WalletSignTransactionError } from '@solana/wal
 import Popup from 'reactjs-popup';
 import React, { useState, useCallback, useEffect, useMemo, Component } from 'react';
 //@ts-ignore
-import { GameCreator } from './GameCreator.tsx';
+import { GameCreator, GameJoiner } from './GameCreator.tsx';
+//@ts-ignore
+import { Game } from './Game.tsx';
 import './Selector.css';
 
 const Loading = (props) => {
@@ -35,44 +37,67 @@ const Empty = (props) => {
 
 //Change onClick for join button to proper function later
 const GameTable = (props) => {
+    const [entered, setEntered] = useState("");
     const { publicKey, sendTransaction } = useWallet();
+    
+    const [password, setPassword] = useState("");
     return (
         <div>
-            <table className="Games">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Creator</th>
-                        <th>Bet</th>
-                        <th>Private</th>
-                        <th>Full</th>
-                        <th>Join</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Object.keys(props.games).map(function (key, index) {
-                        return (
+            {entered == "" ? 
+                <div>
+                    <table className="Games">
+                        <thead>
                             <tr>
-                                <td>{key}</td>
-                                <td>{props.games[key].parent}</td>
-                                <td>{props.games[key].wager}</td>
-                                <td>{props.games[key].password.toString()}</td>
-                                <td>{props.games[key].full.toString()}</td>
-                                <td><button disabled={publicKey == null || props.games[key].full} onClick={props.refresh}>Join</button></td>
+                                <th>ID</th>
+                                <th>Creator</th>
+                                <th>Bet</th>
+                                <th>Private</th>
+                                <th>Full</th>
+                                <th>Join</th>
                             </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
-            {publicKey == null ?
-                <button disabled={true}> + New (Wallet Not Connected)</button>
-                :
-                <Popup trigger={<button> + New </button>}>
-                    <GameCreator refresh={props.refresh} parent={publicKey.toString()} />
-                </Popup>
-            }
-            <br></br>
-            <button onClick={props.refresh}>Refresh</button>
+                        </thead>
+                        <tbody>
+                            {Object.keys(props.games).map(function (key, index) {
+                                return (
+                                    <tr>
+                                        <td>{key}</td>
+                                        <td>{props.games[key].parent}</td>
+                                        <td>{props.games[key].wager}</td>
+                                        <td>{props.games[key].password.toString()}</td>
+                                        <td>{props.games[key].full.toString()}</td>
+                                        <td>
+                                            {props.games[key].password ? 
+                                                    <Popup trigger={<button>Join</button>}>
+                                                        <GameJoiner setPass={setPassword} setEntered={setEntered} gameId={key} />
+                                                    </Popup>
+                                                :
+                                                    <button disabled={publicKey == null || props.games[key].full} onClick={() => setEntered(key)}>Join</button>
+                                            }
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                    {publicKey == null ?
+                        <button disabled={true}> + New (Wallet Not Connected)</button>
+                        :
+                        <Popup trigger={<button> + New </button>}>
+                            <GameCreator refresh={props.refresh} parent={publicKey.toString()} />
+                        </Popup>
+                    }
+                    <br></br>
+                    <button onClick={props.refresh}>Refresh</button>
+                </div>
+            :
+                <div>
+                    {publicKey != null ?
+                            <Game gameId={entered} password={password} address={publicKey} callback={setEntered} />
+                        :
+                            <h1>Game cannot continue without wallet connected!</h1>
+                    }
+                </div>
+        }
         </div>
     );
 }

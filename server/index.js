@@ -25,7 +25,8 @@ const escrow = solana.Keypair.fromSecretKey(new Uint8Array([83,61,11,202,233,91,
                                                             //DO NOT UNDER ANY CIRCUMSTANCES PUT A MAINNET KEY HERE AND PUSH
 const network = new solana.Connection(solana.clusterApiUrl('devnet'), 'confirmed');
 class Game {
-    constructor(wager, password, parent) {
+    constructor(id, wager, password, parent) {
+        this.id = id;
         this.instance = new Chess();
         this.password = password;
         this.wager = wager;
@@ -144,7 +145,7 @@ class Game {
                 this.parent = address;
                 this.parent_raw = socket;
                 this.parent_raw.emit('payment', JSON.stringify({ status: "buyin", amount: this.wager, address: escrow.publicKey.toString() }));
-                return JSON.stringify({ status: "success", reason: "", code: 200, id: params.id });
+                return JSON.stringify({ status: "success", reason: "", code: 200, id: this.id});
             }
             else {
                 return JSON.stringify({ status: "failed", reason: "The creator of this game has already paid", code: 402});
@@ -190,7 +191,7 @@ app.post('/new', function (req, res) {
     console.log(`New Game Request: ${JSON.stringify(req.body.params)}`);
     let params = req.body.params;
     let id = uuid.v4();
-    games[id] = new Game(params.wager, params.password, params.parent);
+    games[id] = new Game(id, params.wager, params.password, params.parent);
     console.log(`[HTTP DBG] - New Game Created (id: ${id} wager: ${params.wager} password: ${params.password} parent: ${params.parent})`);
     res.send(JSON.stringify({ status: "success", game: id }));
     res.end();
