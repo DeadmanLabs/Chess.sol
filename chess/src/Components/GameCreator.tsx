@@ -37,7 +37,7 @@ const GameCreator = (props) => {
 
     //Dont forget to fix the regex pattern here to accept 1 and 1. as well as 1.0
     return (
-        <div>
+        <div className="creator">
             {loading ?
                 <div>Creating Game...</div>
                 :
