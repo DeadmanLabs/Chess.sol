@@ -16,19 +16,11 @@ td {
     height: 5rem;
 }
 
-.row:nth-child(2n){
+td.row:nth-child(2n) td.row2:nth-child(2n-1){
     background-color: #f1e8d8;
 }
-.row:nth-child(2n-1){
+td.row:nth-child(2n-1) td.row2:nth-child(2n){
     background-color: #8d3c1e;
-}
-
-.row2:nth-child(2n) {
-    background-color: #8d3c1e;
-}
-
-.row2:nth-child(2n-1) {
-    background-color: #f1e8d8;
 }
 
 .piece{

@@ -228,7 +228,7 @@ wss.on('connection', async (ws) => {
                 console.log(`[DBG] - Password Accepted!`);
                 ws.on('payment', (data) => {
                     let details = JSON.parse(data);
-                    if (details.amount + 0.00001 >= games[game].wager)
+                    if (details.amount >= games[game].wager)
                     {
                         let confirmed = confirmPayment(details.tx);
                         if (confirmed)
@@ -242,7 +242,7 @@ wss.on('connection', async (ws) => {
                                 games[game].challenger_buyin = details.tx;
                             }
                             ws.emit('payment-completed', JSON.stringify({}));
-                            console.log(`[DBG] - Payment completed!`);
+                            ws.emit('game', JSON.stringify({ status: "move", board: games[game].instance.fen(), moves: games[game].instance.moves() }));
                         }
                         else
                         {
@@ -273,13 +273,19 @@ wss.on('connection', async (ws) => {
                         let loser = "";
                         if (address == games[game].parent)
                         {
-                            games[game].payWinnerForce(games[game].challenger);
-                            loser = "parent";
+                            if (games[game].parent_buyin != undefined)
+                            {
+                                games[game].payWinnerForce(games[game].challenger);
+                                loser = "parent";
+                            }
                         }
                         else if (address == games[game].challenger)
                         {
-                            games[game].payWinnerForce(games[game].parent);
-                            loser = "challenger";
+                            if (games[game].challenger_buyin != undefined)
+                            {
+                                games[game].payWinnerForce(games[game].parent);
+                                loser = "challenger";
+                            }
                         }
                         console.log(`[DBG] - ${loser} forfeited the game`);
                     }
