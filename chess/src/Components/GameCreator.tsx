@@ -22,6 +22,7 @@ const GameCreator = (props) => {
             setResponse(data);
             setLoading(false);
         })
+        props.refresh();
     }
 
     function handleSubmit(event) {

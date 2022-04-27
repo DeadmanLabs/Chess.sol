@@ -22,7 +22,7 @@ const Empty = (props) => {
             <h1>No Games Available! Please create a new game.</h1>
             {publicKey !== null ? 
                 <Popup trigger={<div className="newGame"> + New </div>}>
-                    <GameCreator parent={publicKey.toString()} />
+                    <GameCreator refresh={props.refresh} parent={publicKey.toString()} />
                 </Popup>
                 :
                 <p>Wallet Not Connected!</p>
@@ -55,14 +55,22 @@ const GameTable = (props) => {
                                 <td>{key}</td>
                                 <td>{props.games[key].parent}</td>
                                 <td>{props.games[key].wager}</td>
-                                <td>{props.games[key].password}</td>
-                                <td>{props.games[key].full}</td>
+                                <td>{props.games[key].password.toString()}</td>
+                                <td>{props.games[key].full.toString()}</td>
                                 <td><button disabled={publicKey == null || props.games[key].full} onClick={props.refresh}>Join</button></td>
                             </tr>
                         )
                     })}
                 </tbody>
             </table>
+            {publicKey == null ?
+                <button disabled={true}> + New (Wallet Not Connected)</button>
+                :
+                <Popup trigger={<button> + New </button>}>
+                    <GameCreator refresh={props.refresh} parent={publicKey.toString()} />
+                </Popup>
+            }
+            <br></br>
             <button onClick={props.refresh}>Refresh</button>
         </div>
     );
