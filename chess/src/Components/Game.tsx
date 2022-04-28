@@ -77,12 +77,11 @@ const Game = (props) => {
                 else if (details.status == "board")
                 {
                     //Update board event
-                    setBoard(details.board);
-                    console.log(`New Board! ${board}`);
+                    setBoard(Chess(details.board));
+                    console.log(`Board! ${board}`);
                 }
                 else if (details.status == "move")
                 {
-                    //new possible moveset
                     if (details.hasOwnProperty('board'))
                     {
                         setBoard(Chess(details.board));
@@ -91,7 +90,6 @@ const Game = (props) => {
                     setMoves(details.moves);
                     console.log("New Moves!");
                 }
-                console.log("Game: " + JSON.stringify(details));
             });
             socket.on('payment', async (params) => {
                 let details = JSON.parse(params);

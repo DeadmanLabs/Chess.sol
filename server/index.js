@@ -121,7 +121,7 @@ class Game {
 
     perpetrateMove(cTO, cFROM, address){
         //returns the state of the board and the current player's potential move set
-        if (this.instance.get(cFROM).color == (address == this.parent ? "w" : "b") && this.instance.move({from: cFROM, to: cTO}) == null) 
+        if (this.instance.get(cFROM) != null && this.instance.get(cFROM).color == (address == this.parent ? "w" : "b") && this.instance.move({from: cFROM, to: cTO}) == null) 
         {
             if (this.instance.in_checkmate() || this.instance.in_draw()) 
             {
