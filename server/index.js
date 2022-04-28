@@ -128,11 +128,11 @@ class Game {
                 this.payWinner();
                 return;
             }
-            return JSON.stringify({moves: this.instance.moves()});
+            return JSON.stringify({ status: "move", board: this.instance.fen(), moves: this.instance.moves() });
         }
         else
         {
-            return JSON.stringify({board: this.instance.fen(), moves: this.instance.moves()});
+            return JSON.stringify({ status: "move", board: this.instance.fen() });
         }
     }
 
@@ -158,10 +158,10 @@ class Game {
                 this.challenger = address;
                 this.challenger_raw = socket;
                 this.challenger_raw.emit('payment', JSON.stringify({ status: "buyin", amount: this.wager, address: escrow.publicKey.toString() }));
-                return JSON.stringify({ status: "success", reason: "", code: 200, id: params.id });
+                return { status: "success", reason: "", code: 200, id: params.id };
             }
             else {
-                return JSON.stringify({ status: "failed", reason: "The challenger of this game has already paid", code: 402});
+                return { status: "failed", reason: "The challenger of this game has already paid", code: 402};
             }
         }
     }

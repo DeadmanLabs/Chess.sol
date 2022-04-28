@@ -15,6 +15,7 @@ const Game = (props) => {
     const [board, setBoard] = useState(undefined);
     const [moves, setMoves] = useState({});
     const [error, setError] = useState({status: "", reason: "", code: 0});
+    const [force, setForce] = useState(0);
 
     const [selected, setSelected] = useState("");
 
@@ -29,6 +30,7 @@ const Game = (props) => {
         if (socket != undefined && selected != "" && state == "paid")
         {
             socket.emit('game', JSON.stringify({ status: "move", to: pos.toLowerCase(), from: selected }));
+            console.log(`Moved from ${selected} to ${pos.toLowerCase()}`);
         }
         else 
         {
@@ -65,7 +67,8 @@ const Game = (props) => {
             socket.on('game', (params) => {
                 let details = JSON.parse(params);
                 //Handle new board, move and gameover events
-                if (details.status == "gameover")
+                setForce(force + 1);
+                if (details.status == "gameover" || details["status"] == "gameover")
                 {
                     //Terminate Socket and display end message
                     socket.disconnect();
@@ -74,13 +77,14 @@ const Game = (props) => {
                     setMoves({});
                     console.log("Game Over!");
                 }
-                else if (details.status == "board")
+                else if (details.status == "board" || details["status"] == "board")
                 {
                     //Update board event
+                    setBoard(undefined);
                     setBoard(Chess(details.board));
                     console.log(`Board! ${board}`);
                 }
-                else if (details.status == "move")
+                else if (details.status == "move" || details["status"] == "move")
                 {
                     if (details.hasOwnProperty('board'))
                     {
@@ -90,6 +94,7 @@ const Game = (props) => {
                     setMoves(details.moves);
                     console.log("New Moves!");
                 }
+                console.log(JSON.parse(params));
             });
             socket.on('payment', async (params) => {
                 let details = JSON.parse(params);
