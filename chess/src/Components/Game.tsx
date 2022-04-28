@@ -16,8 +16,30 @@ const Game = (props) => {
     const [moves, setMoves] = useState({});
     const [error, setError] = useState({status: "", reason: "", code: 0});
 
+    const [selected, setSelected] = useState("");
+
     const { connection } = useConnection();
     const { publicKey, sendTransaction } = useWallet();
+
+    function hoverMove(pos) {
+        
+    }
+
+    function moveHere(pos) {
+        if (socket != undefined && selected != "" && state == "paid")
+        {
+            socket.emit('game', JSON.stringify({ status: "move", to: pos.toLowerCase(), from: selected }));
+        }
+        else 
+        {
+            alert("General Move Error!");
+        }
+    }
+
+    function selectHere(pos) {
+        setSelected(pos.toLowerCase());
+        console.log('Selected pos ' + selected);
+    }
 
     const pieces = {w: {'r': <img src="chess_pieces\Rook_White.png" className="piece" />,
                         'n': <img src="chess_pieces\Knight_White.png" className="piece" />,
@@ -42,7 +64,6 @@ const Game = (props) => {
             setSocket(socket);
             socket.on('game', (params) => {
                 let details = JSON.parse(params);
-                console.log('Game Packet!');
                 //Handle new board, move and gameover events
                 if (details.status == "gameover")
                 {
@@ -70,6 +91,7 @@ const Game = (props) => {
                     setMoves(details.moves);
                     console.log("New Moves!");
                 }
+                console.log("Game: " + JSON.stringify(details));
             });
             socket.on('payment', async (params) => {
                 let details = JSON.parse(params);
@@ -130,9 +152,19 @@ const Game = (props) => {
             let piece = board.get(pos.toLowerCase());
             if (piece != null)
             {
-                return pieces[piece.color][piece.type.toLowerCase()];
+                return (
+                    <div onClick={() => selectHere(pos)} onMouseOver={() => hoverMove(pos.toLowerCase())}>
+                        {
+                            pieces[piece.color][piece.type.toLowerCase()]
+                        }
+                    </div>
+                )
             }
-            return;
+            return (
+                <div className="empty" onClick={() => moveHere(pos.toLowerCase())}>
+
+                </div>
+            );
         }
         return;
     }
@@ -247,6 +279,7 @@ const Game = (props) => {
                         </tr>
                     </table>
                     <button onClick={forfeit}>Forfeit</button>
+                    <p>{board != undefined ? board.fen() : "" }</p>
                 </div>
         }
         </div>

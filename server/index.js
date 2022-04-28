@@ -119,9 +119,9 @@ class Game {
         this.challenger_raw.emit(event, content);
     }
 
-    perpetrateMove(curMove){
+    perpetrateMove(cTO, cFROM, address){
         //returns the state of the board and the current player's potential move set
-        if (this.instance.move(curMove) == null) 
+        if (this.instance.get(cFROM).color == (address == this.parent ? "w" : "b") && this.instance.move({from: cFROM, to: cTO}) == null) 
         {
             if (this.instance.in_checkmate() || this.instance.in_draw()) 
             {
@@ -259,14 +259,8 @@ wss.on('connection', async (ws) => {
                     let details = JSON.parse(data);
                     if (details.status == "move")
                     {
-                        //Players Move
-                        let results = perpetrateMove();
-                        if (JSON.parse(results).hasOwnProperty('board'))
-                        {
-                            //Valid Move
-                            let a = 1;
-                        }
-                        //Invalid Move
+                        let results = games[game].perpetrateMove(details.to, details.from, address);
+                        ws.emit('game', JSON.stringify(results));
                     }
                     else if (details.status == "forfeit") 
                     {

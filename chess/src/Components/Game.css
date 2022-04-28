@@ -33,3 +33,8 @@ table.gameBoard .row2{
 .selected{
     background-color: #fffc5c;
 }
+
+.empty {
+    height: 100%;
+    width: 100%;
+}
