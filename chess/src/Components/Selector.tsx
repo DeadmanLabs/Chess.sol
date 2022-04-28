@@ -112,7 +112,7 @@ const Selector = (props) => {
         {
             try
             {
-                await fetch("http://localhost:80/games")
+                await fetch("http://192.168.2.247:80/games")
                     .then(response => {
                         err = false;
                         return response.json()

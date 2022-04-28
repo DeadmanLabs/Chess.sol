@@ -6,7 +6,7 @@ const GameCreator = (props) => {
     const [loading, setLoading] = useState(false);
     const requestNewGame = async (Pwager, Ppassword, Pparent) => {
         setLoading(true);
-        await fetch("http://localhost:80/new", {
+        await fetch("http://192.168.2.247:80/new", {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

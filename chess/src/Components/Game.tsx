@@ -37,7 +37,7 @@ const Game = (props) => {
                    }
 
     useEffect(() => {
-        const socket = ws("http://localhost/");
+        const socket = ws("http://192.168.2.247/");
         socket.on('connect', () => {
             setSocket(socket);
             socket.on('game', (params) => {
@@ -119,6 +119,7 @@ const Game = (props) => {
     function forfeit()
     {
         //Terminate socket here
+        socket.emit('game', JSON.stringify({ status: "forfeit" }));
         props.callback("");
     }
 
